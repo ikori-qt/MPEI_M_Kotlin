@@ -85,56 +85,6 @@ fun main () {
     }
 }
 
-abstract class Calculations {
-    abstract fun addition (
-        normalizedCompOne: Int,
-        normalizedCompTwo: Int
-    ): Int
-    abstract fun subtraction(
-        normalizedCompOne: Int,
-        normalizedCompTwo: Int
-    ): Int
-    abstract fun division(
-        normalizedCompOne: Int,
-        normalizedCompTwo: Int
-    ): Int
-    abstract fun multiplication(
-        normalizedCompOne: Int,
-        normalizedCompTwo: Int
-    ): Int
-}
-
-interface Operation {
-    fun execute (
-        a: Int,
-        b: Int
-    ): Int
-}
-
-class Addition : Operation {
-    override fun execute(a: Int, b: Int): Int {
-        return a + b
-    }
-}
-
-class Subtraction : Operation {
-    override fun execute(a: Int, b: Int): Int {
-        return a - b
-    }
-}
-
-class Multiplication : Operation {
-    override fun execute(a: Int, b: Int): Int {
-        return a * b
-    }
-}
-
-class Division : Operation {
-    override fun execute(a: Int, b: Int): Int {
-        return a / b
-    }
-}
-
 object ArabicCalculations: Calculations() {
     private val additionOp: Operation = Addition()
     private val subtractionOp: Operation = Subtraction()
@@ -263,20 +213,5 @@ object RomanCalculations: Calculations() {
         }
 
         return result.toString()
-    }
-}
-
-object NumberIdentifier {
-    fun isRomanNumber (
-        number: String
-    ): Boolean {
-        // Will eat things like IIIIIV
-        return Regex("[MDCLXVI]+").matches(number)
-    }
-
-    fun isArabicNumber (
-        number: String
-    ): Boolean {
-        return Regex("[-,.0-9]+").matches(number)
     }
 }

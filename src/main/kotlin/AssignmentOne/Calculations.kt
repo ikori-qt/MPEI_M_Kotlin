@@ -17,4 +17,7 @@ abstract class Calculations {
         normalizedCompOne: Int,
         normalizedCompTwo: Int
     ): Int
+    abstract fun normalize(
+        startingString: String
+    ): Int
 }

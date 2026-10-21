@@ -4,13 +4,13 @@ import java.util.Scanner
 import kotlin.collections.listOf
 
 fun main () {
-    val scanner: Scanner = Scanner(System.`in`)
+    val scanner = Scanner(System.`in`)
     val rawInput: String = scanner.nextLine()
 
     val inputValues: List<String> = rawInput.split(Regex("[-+*/]"))
     val operator: String = Regex("[-+*/]")
-        .find(rawInput)!!
-        .value
+        .find(rawInput)
+        ?.value ?: error("")
 
     val bothArabic: Boolean = (NumberIdentifier.isArabicNumber(inputValues[0])
             && NumberIdentifier.isArabicNumber(inputValues[1]))
@@ -21,29 +21,8 @@ fun main () {
     }
 
     if (bothRoman) {
-        val printableResult: Int? = when (operator) {
-            "+" -> RomanCalculations.addition(
-                RomanCalculations.normalize(inputValues[0]),
-                RomanCalculations.normalize(inputValues[1])
-            )
 
-            "-" -> RomanCalculations.subtraction(
-                RomanCalculations.normalize(inputValues[0]),
-                RomanCalculations.normalize(inputValues[1])
-            )
-
-            "*" -> RomanCalculations.multiplication(
-                RomanCalculations.normalize(inputValues[0]),
-                RomanCalculations.normalize(inputValues[1])
-            )
-
-            "/" -> RomanCalculations.division(
-                RomanCalculations.normalize(inputValues[0]),
-                RomanCalculations.normalize(inputValues[1])
-            )
-            else ->
-                null
-        }
+        val printableResult = separation(RomanCalculations, operator, inputValues)
 
         printableResult ?: println("Unknown operator supplied and somehow passed (impossible)")
 
@@ -53,29 +32,8 @@ fun main () {
         }
 
     } else if (bothArabic){
-        val printableResult: Int? = when (operator) {
-            "+" -> ArabicCalculations.addition(
-                inputValues[0].toInt(),
-                inputValues[1].toInt()
-            )
 
-            "-" -> RomanCalculations.subtraction(
-                inputValues[0].toInt(),
-                inputValues[1].toInt()
-            )
-
-            "*" -> RomanCalculations.multiplication(
-                inputValues[0].toInt(),
-                inputValues[1].toInt()
-            )
-
-            "/" -> RomanCalculations.division(
-                inputValues[0].toInt(),
-                inputValues[1].toInt()
-            )
-            else ->
-                null
-        }
+        val printableResult = separation(ArabicCalculations, operator, inputValues)
 
         printableResult ?: println("Unknown operator supplied and somehow passed (impossible)")
 
@@ -121,6 +79,10 @@ object ArabicCalculations: Calculations() {
     ): Int {
         return multiplicationOp.execute(normalizedCompOne,normalizedCompTwo)
     }
+
+    override fun normalize(
+        startingString: String
+    ): Int = startingString.toInt()
 }
 
 object RomanCalculations: Calculations() {
@@ -176,7 +138,7 @@ object RomanCalculations: Calculations() {
         return multiplicationOp.execute(normalizedCompOne,normalizedCompTwo)
     }
 
-    fun normalize (
+    override fun normalize (
         startingString: String
     ): Int {
         var sum: Int = 0
@@ -214,4 +176,32 @@ object RomanCalculations: Calculations() {
 
         return result.toString()
     }
+}
+
+fun separation (
+    calculator: Calculations,
+    operator: String,
+    inputValues: List<String>
+):Int? = when (operator) {
+    "+" -> calculator.addition(
+        calculator.normalize(inputValues[0]),
+        calculator.normalize(inputValues[1])
+    )
+
+    "-" -> calculator.subtraction(
+        calculator.normalize(inputValues[0]),
+        calculator.normalize(inputValues[1])
+    )
+
+    "*" -> calculator.multiplication(
+        calculator.normalize(inputValues[0]),
+        calculator.normalize(inputValues[1])
+    )
+
+    "/" -> calculator.division(
+        calculator.normalize(inputValues[0]),
+        calculator.normalize(inputValues[1])
+    )
+    else ->
+        null
 }
